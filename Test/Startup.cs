@@ -75,6 +75,8 @@ namespace Test
                     spa.UseAngularCliServer(npmScript: "start");
                 }
             });
+
+            app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
         }
     }
 }
