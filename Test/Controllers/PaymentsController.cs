@@ -40,12 +40,19 @@ namespace Test.Controllers
                             while (!sreader.EndOfStream)
                             {
                                 string[] rows = sreader.ReadLine().Split(',');
-                                fileForCreationDto.TransactionId = rows[0].ToString().Replace("\"", string.Empty);
-                                fileForCreationDto.Amount = decimal.Parse(rows[1].ToString().Replace("\"", string.Empty));
-                                fileForCreationDto.CurrencyCode = rows[2].ToString().Replace("\"", string.Empty);
-                                fileForCreationDto.TransactionDate = DateTime.Parse(rows[3].ToString().Replace("\"", string.Empty));
-                                fileForCreationDto.Status = rows[4].ToString().Replace("\"", string.Empty);
+                                Payment payment = new Payment
+                                {
+                                    TransactionId = rows[0].ToString().Replace("\"", string.Empty),
+                                    Amonnt = decimal.Parse(rows[1].ToString().Replace("\"", string.Empty)),
+                                    CurrencyCode = rows[2].ToString().Replace("\"", string.Empty),
+                                    TransactionDate = DateTime.Parse(rows[3].ToString().Replace("\"", string.Empty)),
+                                    Status = rows[4].ToString().Replace("\"", string.Empty),
+                                };
+
+                                _context.Add(payment);
                             }
+
+                            await _context.SaveChangesAsync();
                         }
                     }
                     catch (Exception ex)
@@ -72,8 +79,8 @@ namespace Test.Controllers
                                 Amonnt = decimal.Parse(item.PaymentDetails.Amount),
                                 CurrencyCode = item.PaymentDetails.CurrencyCode,
                                 TransactionDate = DateTime.Parse(item.TransactionDate),
-                                Status = Enum.TryParse(item.Status, out PaymentStatus paymentStatus) ? paymentStatus : default,
-                        };
+                                Status = item.Status,
+                            };
                             _context.Add(payment);
                         }
 
