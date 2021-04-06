@@ -23,11 +23,51 @@ namespace Test.Controllers
         {
             _context = context;
         }
+        
+        [HttpGet]
+        public async Task<IActionResult> GetPayments(string currency, DateTime? start, DateTime? end, string statusCode)
+        {
+            var paymentsDb = _context.Payment.AsQueryable();
+
+            if(!string.IsNullOrEmpty(currency))
+            {
+                paymentsDb = paymentsDb.Where(x => x.CurrencyCode == currency);
+            }
+
+            var payments = await paymentsDb.ToListAsync();
+
+            List<PaymentsToReturn> Payments = new List<PaymentsToReturn>();
+            foreach(var item in paymentsDb)
+            {
+                PaymentsToReturn Payment = new PaymentsToReturn
+                {
+                    TransactionId = item.TransactionId,
+                    Payment = $"{item.Amonnt} {item.CurrencyCode}",
+                    Status = item.Status
+                };
+
+                Payments.Add(Payment);
+            }
+
+            IEnumerable<PaymentsToReturn> result = Payments;
+            if (!string.IsNullOrEmpty(statusCode))
+            {
+                result = Payments.Where(x => x.StatusCode == statusCode);
+            }
+                
+            return Ok(result);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetCurrency()
+        {
+            var currency = await _context.Payment.Select(x => x.CurrencyCode).Distinct().ToListAsync();
+            return Ok(currency);
+        }
 
         [HttpPost]
         public async Task<IActionResult> Uploadfile()
         {
-            FileForCreationDto fileForCreationDto = new FileForCreationDto();
             var file = Request.Form.Files[0];
             if (file.Length > 0)
             {
@@ -88,12 +128,12 @@ namespace Test.Controllers
 
                     } catch(Exception ex)
                     {
-
+                        return BadRequest("csv invalid.");
                     }
                 }
                 else
                 {
-
+                    return BadRequest("csv invalid.");
                 }
             }
             return Ok();

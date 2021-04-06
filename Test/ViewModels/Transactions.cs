@@ -7,16 +7,6 @@ using System.Xml.Serialization;
 
 namespace Test.ViewModels
 {
-    public class FileForCreationDto
-    {
-        public IFormFile File { get; set; }
-        public string TransactionId { get; set; }
-        public Decimal Amount { get; set; }
-        public string CurrencyCode { get; set; }
-        public DateTime TransactionDate { get; set; }
-        public string Status { get; set; }
-    }
-
 	[XmlRoot(ElementName = "PaymentDetails")]
 	public class PaymentDetails
 	{

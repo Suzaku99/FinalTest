@@ -3,22 +3,26 @@
         <div class="form-group col-md-6">
           <label for="inputAddress">Upload file</label>
           <input type="file"
+                (change)="handleFileInput($event.target.files)"
                  class="custom-file-input"
                  id="customFile">
           <label class="custom-file-label"
-                 for="customFile">Choose CSV, XML file</label>
+                 for="customFile">{{ filename }}</label>
         </div>
         <div class="form-group col-md-6">
-          <button class="btn btn-primary">Upload file</button>
+          <button (click)="uploadFile()" class="btn btn-primary">Upload file</button>
         </div>
       </div>
       <div class="form-row">
         <div class="form-group col-md-4">
           <label for="inputState">Currency</label>
-          <select id="inputState"
+          <select id="currency"
+                  name="currency"
+                  (change)="onCurrencyChange()"
+                  [(ngModel)]="paymentModel.currency"
                   class="form-control">
-            <option selected>Choose...</option>
-            <option>...</option>
+            <option value="" selected>Choose...</option>
+            <option *ngFor="let item of currencyCode" [value]="item" [label]="item"></option>
           </select>
         </div>
         <div class="form-group col-md-2">
@@ -37,10 +41,15 @@
         </div>
         <div class="form-group col-md-4">
           <label for="inputState">Status</label>
-          <select id="inputState"
+          <select id="statusCode"
+                  name="statusCode"
+                  (change)="onStatusChange()"
+                  [(ngModel)]="paymentModel.statusCode"
                   class="form-control">
-            <option selected>Choose...</option>
-            <option>...</option>
+            <option value="" selected>Choose...</option>
+            <option>A</option>
+            <option>R</option>
+            <option>D</option>
           </select>
         </div>
       </div>
@@ -54,20 +63,10 @@
         </tr>
       </thead>
       <tbody>
-        <tr>
-          <td>Mark</td>
-          <td>Otto</td>
-          <td>@mdo</td>
-        </tr>
-        <tr>
-          <td>Jacob</td>
-          <td>Thornton</td>
-          <td>@fat</td>
-        </tr>
-        <tr>
-          <td>Jacob</td>
-          <td>Thornton</td>
-          <td>@fat</td>
+        <tr *ngFor="let item of payments">
+          <td>{{item.transactionId}}</td>
+          <td>{{item.payment}}</td>
+          <td>{{item.statusCode}}</td>
         </tr>
       </tbody>
     </table>
