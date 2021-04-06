@@ -18,6 +18,8 @@ export class HomeComponent {
     this.paymentModel.currency = "";
     this.paymentModel.statusCode = "";
     this.paymentModel.dateRange = "";
+    this.paymentModel.start = "";
+    this.paymentModel.end = "";
     this.getPayments();
     this.getCurrency();
   }
@@ -42,7 +44,7 @@ export class HomeComponent {
   uploadFile()
   {
       this.paymentService.uploadFile(this.fileToUpload).subscribe((response: any) => {
-      console.log(response);
+      this.getPayments();
     });
   }
 
@@ -57,5 +59,24 @@ export class HomeComponent {
 
   onDateRangeChange() {
     console.log(this.paymentModel);
+
+    if(this.paymentModel.dateRange[0] != undefined)
+    {
+      this.paymentModel.start = this.paymentModel.dateRange[0].toISOString().slice(0,10); 
+      this.paymentModel.end = this.paymentModel.dateRange[1].toISOString().slice(0,10); 
+
+      console.log(this.paymentModel.start);
+    }
+
+    this.getPayments();
+  }
+
+  onClear() {
+    this.paymentModel.currency = "";
+    this.paymentModel.statusCode = "";
+    this.paymentModel.dateRange = "";
+    this.paymentModel.start = "";
+    this.paymentModel.end = "";
+    this.getPayments();
   }
 }

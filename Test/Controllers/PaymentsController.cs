@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -18,20 +19,27 @@ namespace Test.Controllers
     public class PaymentsController : Controller
     {
         private readonly DataContext _context;
+        private readonly CultureInfo cultureinfoTH = new CultureInfo("th-TH");
+        private readonly CultureInfo cultureinfoEN = new CultureInfo("en-US");
 
         public PaymentsController(DataContext context)
         {
             _context = context;
         }
-        
+
         [HttpGet]
-        public async Task<IActionResult> GetPayments(string currency, DateTime? start, DateTime? end, string statusCode)
+        public async Task<IActionResult> GetPayments(string currency, string start, string end, string statusCode)
         {
             var paymentsDb = _context.Payment.AsQueryable();
 
-            if(!string.IsNullOrEmpty(currency))
+            if (!string.IsNullOrEmpty(currency))
             {
                 paymentsDb = paymentsDb.Where(x => x.CurrencyCode == currency);
+            }
+
+            if (!string.IsNullOrEmpty(start) && !string.IsNullOrEmpty(end))
+            {
+                paymentsDb = paymentsDb.Where(x => x.TransactionDate >= DateTime.Parse(start) && x.TransactionDate <= DateTime.Parse(end));
             }
 
             var payments = await paymentsDb.ToListAsync();
@@ -80,12 +88,13 @@ namespace Test.Controllers
                             while (!sreader.EndOfStream)
                             {
                                 string[] rows = sreader.ReadLine().Split(',');
+
                                 Payment payment = new Payment
                                 {
                                     TransactionId = rows[0].ToString().Replace("\"", string.Empty),
                                     Amonnt = decimal.Parse(rows[1].ToString().Replace("\"", string.Empty)),
                                     CurrencyCode = rows[2].ToString().Replace("\"", string.Empty),
-                                    TransactionDate = DateTime.Parse(rows[3].ToString().Replace("\"", string.Empty)),
+                                    TransactionDate = DateTime.Parse(rows[3].ToString().Replace("\"", string.Empty), cultureinfoTH),
                                     Status = rows[4].ToString().Replace("\"", string.Empty),
                                 };
 
@@ -97,7 +106,7 @@ namespace Test.Controllers
                     }
                     catch (Exception ex)
                     {
-                        return BadRequest("csv invalid.");
+                        return BadRequest(ex);
                     }
                 }
                 else if (file.FileName.EndsWith(".xml"))
@@ -128,12 +137,12 @@ namespace Test.Controllers
 
                     } catch(Exception ex)
                     {
-                        return BadRequest("csv invalid.");
+                        return BadRequest(ex);
                     }
                 }
                 else
                 {
-                    return BadRequest("csv invalid.");
+                    return Ok("Unknown format");
                 }
             }
             return Ok();

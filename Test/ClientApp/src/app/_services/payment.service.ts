@@ -13,6 +13,8 @@ export class PaymentService {
     let params = new HttpParams();
     params = params.append('currency', model.currency);
     params = params.append('statusCode', model.statusCode);
+    params = params.append('start', model.start);
+    params = params.append('end', model.end);
     return this.http.get(this.url + 'payments/GetPayments', { params: params });
   }
 
