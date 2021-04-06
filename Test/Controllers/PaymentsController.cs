@@ -77,6 +77,7 @@ namespace Test.Controllers
         public async Task<IActionResult> Uploadfile()
         {
             var file = Request.Form.Files[0];
+
             if (file.Length > 0)
             {
                 if (file.FileName.EndsWith(".csv"))
@@ -106,7 +107,7 @@ namespace Test.Controllers
                     }
                     catch (Exception ex)
                     {
-                        return BadRequest(ex);
+                        return BadRequest(ex.Message);
                     }
                 }
                 else if (file.FileName.EndsWith(".xml"))
@@ -137,15 +138,15 @@ namespace Test.Controllers
 
                     } catch(Exception ex)
                     {
-                        return BadRequest(ex);
+                        return BadRequest(ex.Message);
                     }
                 }
                 else
                 {
-                    return Ok("Unknown format");
+                    return BadRequest("Unknown format");
                 }
             }
-            return Ok();
+            return BadRequest("File is empty");
         }
     }
 }

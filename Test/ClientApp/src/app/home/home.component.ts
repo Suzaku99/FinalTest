@@ -12,6 +12,7 @@ export class HomeComponent {
   public payments: Payment[];
   public currencyCode: string[];
   public paymentModel: any = {};
+  public textError: string;
   constructor(private paymentService: PaymentService){
     this.filename = "Choose CSV, XML file";
 
@@ -27,6 +28,9 @@ export class HomeComponent {
   getPayments() {
     this.paymentService.getPayments(this.paymentModel).subscribe((response: any) => {
         this.payments = response;
+    }, (error: any) => {
+      console.log(error);
+      this.textError = error;
     }); 
   }
 
@@ -43,8 +47,18 @@ export class HomeComponent {
 
   uploadFile()
   {
+    if(!this.fileToUpload)
+    {
+      this.textError = "File is empty"
+      return;
+    }
+    
       this.paymentService.uploadFile(this.fileToUpload).subscribe((response: any) => {
-      this.getPayments();
+        this.textError = response;
+        this.getPayments();
+    }, (error: any) => {
+      console.log(error);
+      this.textError = error.error;
     });
   }
 
@@ -77,6 +91,7 @@ export class HomeComponent {
     this.paymentModel.dateRange = "";
     this.paymentModel.start = "";
     this.paymentModel.end = "";
+    this.textError = "";
     this.getPayments();
   }
 }
