@@ -146,7 +146,7 @@ namespace Test.Controllers
                     return BadRequest("Unknown format");
                 }
             }
-            return BadRequest("File is empty");
+            return Ok();
         }
     }
 }
