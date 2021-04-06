@@ -17,7 +17,7 @@ export class HomeComponent {
 
     this.paymentModel.currency = "";
     this.paymentModel.statusCode = "";
-
+    this.paymentModel.dateRange = "";
     this.getPayments();
     this.getCurrency();
   }
@@ -53,5 +53,9 @@ export class HomeComponent {
   onCurrencyChange() {
     console.log(this.paymentModel);
     this.getPayments();
+  }
+
+  onDateRangeChange() {
+    console.log(this.paymentModel);
   }
 }

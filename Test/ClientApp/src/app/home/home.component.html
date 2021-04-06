@@ -25,19 +25,16 @@
             <option *ngFor="let item of currencyCode" [value]="item" [label]="item"></option>
           </select>
         </div>
-        <div class="form-group col-md-2">
-          <label for="example-date-input">Date Start</label>
-            <input class="form-control"
-                   type="date"
-                   value="2011-08-19"
-                   id="example-date-input">
-        </div>
-        <div class="form-group col-md-2">
-          <label for="example-date-input">Date End</label>
-          <input class="form-control"
-                 type="date"
-                 value="2011-08-19"
-                 id="example-date-input">
+        <div class="col-xs-12 col-12 col-md-4 form-group">
+          <label for="dateRange">Date</label>
+          <input type="text"
+                 id="dateRange"
+                 name="dateRange"
+                 placeholder="Choose..."
+                 (bsValueChange)="onDateRangeChange()"
+                 [(ngModel)]="paymentModel.dateRange"
+                 class="form-control"
+                 bsDaterangepicker>
         </div>
         <div class="form-group col-md-4">
           <label for="inputState">Status</label>
